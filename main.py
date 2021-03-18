@@ -17,6 +17,7 @@ class Pacman(Sprite):
         self.r = r
         self.c = c
         self.maze = maze
+        self.dot_eaten_observers = []
 
         self.direction = DIR_STILL
         self.next_direction = DIR_STILL
@@ -30,6 +31,8 @@ class Pacman(Sprite):
 
             if self.maze.has_dot_at(r, c):
                 self.maze.eat_dot_at(r, c)
+                self.dot_eaten_observers[0]()
+
             
             if self.maze.is_movable_direction(r, c, self.next_direction):
                 self.direction = self.next_direction
@@ -49,12 +52,27 @@ class PacmanGame(GameApp):
 
         self.pacman1 = Pacman(self, self.maze, 1, 1)
         self.pacman2 = Pacman(self, self.maze, self.maze.get_height() - 2, self.maze.get_width() - 2)
-
+        self.pacman1.dot_eaten_observers.append(self.dot_eaten_by_pacman1)
+        self.pacman2.dot_eaten_observers.append(self.dot_eaten_by_pacman2)
         self.pacman1_score_text = Text(self, 'P1: 0', 100, 20)
         self.pacman2_score_text = Text(self, 'P2: 0', 600, 20)
 
         self.elements.append(self.pacman1)
         self.elements.append(self.pacman2)
+        self.pacman1_score = 0
+        self.pacman2_score = 0
+
+    def dot_eaten_by_pacman1(self):
+        self.pacman1_score += 1
+        self.update_scores()
+
+    def dot_eaten_by_pacman2(self):
+        self.pacman2_score += 1
+        self.update_scores()
+
+    def update_scores(self):
+        self.pacman1_score_text.set_text(f'P1: {self.pacman1_score}')
+        self.pacman2_score_text.set_text(f'P2: {self.pacman2_score}')
 
     def pre_update(self):
         pass
