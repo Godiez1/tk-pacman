@@ -43,7 +43,7 @@ class Pacman(Sprite):
         self.y += PACMAN_SPEED * DIR_OFFSET[self.direction][1]
 
     def set_next_direction(self, direction):
-        self.next_direction = direction
+        self.next_direction = directions
 
 
 class PacmanGame(GameApp):
